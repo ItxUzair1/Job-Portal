@@ -1,4 +1,4 @@
-const asyncHandler=require("async-handler");
+const asyncHandler=require("express-async-handler")
 const User=require("../model/usermodel")
 const jwt=require("jsonwebtoken")
 const bcrypt=require("bcryptjs")
