@@ -6,18 +6,22 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import JobListingPage from "./pages/JobListing";
 import JobDetailsPage from "./pages/JobDetailPage";
+import Layout from "./layout/Layout";
 
 function App() {
   return (
     <BrowserRouter>
-    <AuthProvider>
-      <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>} />
-        <Route path="/allJobs" element={<JobListingPage/>} />
-        <Route path="/job/:id" element={<JobDetailsPage/>} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          {/* Routes with layout */}
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="allJobs" element={<JobListingPage />} />
+            <Route path="job/:id" element={<JobDetailsPage />} />
+          </Route>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
   );

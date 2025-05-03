@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <Navbar />
       <section className="bg-blue-50 min-h-screen flex flex-col justify-center items-center px-4 py-16">
         <h1 className="text-4xl sm:text-5xl font-bold text-center text-blue-700 mb-6">
           Find Your Dream Job with <span className="text-blue-900">HireNest</span>
@@ -18,7 +17,6 @@ const Home = () => {
           Browse Jobs
         </button></Link>
       </section>
-      <Footer />
     </>
   );
 };
