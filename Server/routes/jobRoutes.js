@@ -1,13 +1,13 @@
 const express=require('express');
 const router=express.Router();
+const {protect}=require('../middlewares/authMiddleware')
+const {createJob,getAllJobs,getJobbyId}=require('../controllers/jobControllers')
 
-router.get('/all',(req,res)=>{
-    res.send('All Jobs');
-});
+router.get('/all',getAllJobs);
 
-router.post('/create',(req,res)=>{  
-    res.status(201).json({message:'Job created successfully'});
-})
+router.post('/create',protect,createJob);
+
+router.get('/:id',getJobbyId);
 
 
 module.exports=router;
