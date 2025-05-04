@@ -1,11 +1,13 @@
 import { createContext, useEffect, useState } from "react";
-import {jwtDecode} from "jwt-decode"; // make sure you have this
+import {jwtDecode} from "jwt-decode"; 
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({ token: null, user: null });
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -44,6 +46,7 @@ export const AuthProvider = ({ children }) => {
   const Logout = () => {
     localStorage.removeItem("token");
     setAuth({ token: null, user: null });
+    navigate("/login"); // Redirect to login page after logout
   };
 
   return (

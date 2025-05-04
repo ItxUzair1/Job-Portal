@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { FaMapMarkerAlt, FaMoneyBillWave, FaClock, FaBriefcase, FaCalendarAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaMoneyBillWave, FaClock, FaBriefcase, FaCalendarAlt, FaBookmark, FaRegBookmark } from 'react-icons/fa';
 
 const JobDetailsPage = () => {
   const { id } = useParams(); // Extract job ID from URL
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isBookmarked, setIsBookmarked] = useState(false); // State to track bookmark status
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -24,6 +25,10 @@ const JobDetailsPage = () => {
     fetchJob();
   }, [id]);
 
+  const handleBookmarkClick = () => {
+    setIsBookmarked(prevState => !prevState); // Toggle bookmark status
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -38,7 +43,17 @@ const JobDetailsPage = () => {
 
   return (
     <section className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">{job.title}</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">{job.title}</h1>
+        <button onClick={handleBookmarkClick} className="text-xl text-gray-400 hover:text-indigo-600">
+          {isBookmarked ? (
+            <FaBookmark className="text-indigo-600" />
+          ) : (
+            <FaRegBookmark className="text-gray-400" />
+          )}
+        </button>
+      </div>
+
       <p className="text-lg text-gray-600 mb-2"><strong>Company:</strong> {job.company}</p>
 
       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
