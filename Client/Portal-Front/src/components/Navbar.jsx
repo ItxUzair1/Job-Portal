@@ -39,7 +39,7 @@ const Navbar = () => {
         {user && user.role === "jobseeker" && (
           <>
             <Link
-              to="/jobs"
+              to="/allJobs"
               className="text-white hover:text-yellow-300 transition duration-300 ease-in-out text-lg"
             >
               Browse Jobs

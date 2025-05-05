@@ -48,7 +48,22 @@ const getAllJobs = asyncHandler(async (req, res) => {
     res.status(200).json(job);
   } );
 
-  
+  const addBookmark=asyncHandler(async (req, res) => {
+    const {userid, jobid}=req.params;
+    const user=await User.findById(userid);
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+    if (user.bookmarkedJobs.includes(jobid)) {
+        res.status(400);
+        throw new Error("Job already bookmarked");
+    }
+    user.bookmarkedJobs.push(jobid);
+    await user.save();
+    res.status(200).json({ message: "Job bookmarked successfully" });
+  })
 
   module.exports = {
     createJob,

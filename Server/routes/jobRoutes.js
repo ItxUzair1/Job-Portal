@@ -9,5 +9,7 @@ router.post('/create',protect,createJob);
 
 router.get('/:id',getJobbyId);
 
+router.post("/users/:userid/jobs/:jobid")
+
 
 module.exports=router;
