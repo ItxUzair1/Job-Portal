@@ -49,7 +49,7 @@ const Navbar = () => {
                   <Link to="/applications" className="text-white hover:text-yellow-300 text-lg transition">
                     My Applications
                   </Link>
-                  <Link to="/saved" className="text-white hover:text-yellow-300 text-lg transition">
+                  <Link to="/bookmarkedJobs" className="text-white hover:text-yellow-300 text-lg transition">
                     Saved Jobs
                   </Link>
                 </>
@@ -112,7 +112,7 @@ const Navbar = () => {
                   <Link to="/applications" className="block text-white hover:text-yellow-300 text-lg transition">
                     My Applications
                   </Link>
-                  <Link to="/saved" className="block text-white hover:text-yellow-300 text-lg transition">
+                  <Link to="/bookmaredJobs" className="block text-white hover:text-yellow-300 text-lg transition">
                     Saved Jobs
                   </Link>
                 </>

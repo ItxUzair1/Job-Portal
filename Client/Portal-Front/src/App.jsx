@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import JobListingPage from "./pages/JobListing";
 import JobDetailsPage from "./pages/JobDetailPage";
 import Layout from "./layout/Layout";
+import BookmarkedJobsPage from "./pages/BookmarkedJobs";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="allJobs" element={<JobListingPage />} />
             <Route path="job/:id" element={<JobDetailsPage />} />
+            <Route path="bookmarkedJobs" element={<BookmarkedJobsPage/>}/>
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

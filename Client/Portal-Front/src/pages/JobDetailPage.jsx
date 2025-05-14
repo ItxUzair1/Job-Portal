@@ -10,7 +10,7 @@ import {
   FaBookmark,
   FaRegBookmark,
 } from 'react-icons/fa';
-import { AuthContext } from '../context/authContext'; // adjust path as needed
+import { AuthContext } from '../context/authContext';
 
 const JobDetailsPage = () => {
   const { id } = useParams();
