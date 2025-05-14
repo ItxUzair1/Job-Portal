@@ -1,14 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { FaMapMarkerAlt, FaMoneyBillWave, FaClock, FaBriefcase, FaCalendarAlt, FaBookmark, FaRegBookmark } from 'react-icons/fa';
+import {
+  FaMapMarkerAlt,
+  FaMoneyBillWave,
+  FaClock,
+  FaBriefcase,
+  FaCalendarAlt,
+  FaBookmark,
+  FaRegBookmark,
+} from 'react-icons/fa';
+import { AuthContext } from '../context/authContext'; // adjust path as needed
 
 const JobDetailsPage = () => {
-  const { id } = useParams(); // Extract job ID from URL
+  const { id } = useParams();
+  const { auth } = useContext(AuthContext);
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isBookmarked, setIsBookmarked] = useState(false); // State to track bookmark status
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  // 🔧 Load bookmark status from localStorage
+  useEffect(() => {
+    const bookmarkStatus = localStorage.getItem(`bookmark-${id}`);
+    setIsBookmarked(bookmarkStatus === 'true');
+  }, [id]);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -25,8 +41,37 @@ const JobDetailsPage = () => {
     fetchJob();
   }, [id]);
 
-  const handleBookmarkClick = () => {
-    setIsBookmarked(prevState => !prevState); // Toggle bookmark status
+  const handleBookmarkClick = async () => {
+    if (!auth?.token) {
+      alert('Please log in to bookmark this job.');
+      return;
+    }
+
+    try {
+      if (isBookmarked) {
+        await axios.delete(
+          `http://localhost:3000/api/jobs/bookmark/${auth.user.id}/${id}`,
+          {
+            headers: { Authorization: `Bearer ${auth.token}` },
+          }
+        );
+        localStorage.setItem(`bookmark-${id}`, 'false'); // 🔧 Store as false
+      } else {
+        await axios.post(
+          `http://localhost:3000/api/jobs/bookmark/${auth.user.id}/${id}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${auth.token}` },
+          }
+        );
+        localStorage.setItem(`bookmark-${id}`, 'true'); // 🔧 Store as true
+      }
+
+      setIsBookmarked((prev) => !prev);
+    } catch (err) {
+      console.error('Bookmark action failed:', err);
+      alert('Something went wrong. Please try again.');
+    }
   };
 
   if (loading) {
@@ -45,7 +90,7 @@ const JobDetailsPage = () => {
     <section className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">{job.title}</h1>
-        <button onClick={handleBookmarkClick} className="text-xl text-gray-400 hover:text-indigo-600">
+        <button onClick={handleBookmarkClick} className="text-xl hover:text-indigo-600">
           {isBookmarked ? (
             <FaBookmark className="text-indigo-600" />
           ) : (
@@ -54,14 +99,27 @@ const JobDetailsPage = () => {
         </button>
       </div>
 
-      <p className="text-lg text-gray-600 mb-2"><strong>Company:</strong> {job.company}</p>
+      <p className="text-lg text-gray-600 mb-2">
+        <strong>Company:</strong> {job.company}
+      </p>
 
       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
-        <span className="flex items-center gap-1"><FaMapMarkerAlt /> {job.location}</span>
-        <span className="flex items-center gap-1"><FaMoneyBillWave /> ${job.salary.min} - ${job.salary.max}</span>
-        <span className="flex items-center gap-1"><FaBriefcase /> {job.jobType}</span>
-        <span className="flex items-center gap-1"><FaClock /> {job.experienceLevel} Level</span>
-        <span className="flex items-center gap-1"><FaCalendarAlt /> Deadline: {job.deadline ? new Date(job.deadline).toLocaleDateString() : 'N/A'}</span>
+        <span className="flex items-center gap-1">
+          <FaMapMarkerAlt /> {job.location}
+        </span>
+        <span className="flex items-center gap-1">
+          <FaMoneyBillWave /> ${job.salary.min} - ${job.salary.max}
+        </span>
+        <span className="flex items-center gap-1">
+          <FaBriefcase /> {job.jobType}
+        </span>
+        <span className="flex items-center gap-1">
+          <FaClock /> {job.experienceLevel} Level
+        </span>
+        <span className="flex items-center gap-1">
+          <FaCalendarAlt /> Deadline:{' '}
+          {job.deadline ? new Date(job.deadline).toLocaleDateString() : 'N/A'}
+        </span>
       </div>
 
       <div className="mb-6">
@@ -79,7 +137,9 @@ const JobDetailsPage = () => {
       </div>
 
       <div className="flex justify-between items-center border-t pt-4">
-        <p className="text-sm text-gray-400">Posted on {new Date(job.createdAt).toLocaleDateString()}</p>
+        <p className="text-sm text-gray-400">
+          Posted on {new Date(job.createdAt).toLocaleDateString()}
+        </p>
         <a
           href={`/apply/${job._id}`}
           className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition duration-200"

@@ -1,15 +1,23 @@
-const express=require('express');
-const router=express.Router();
-const {protect}=require('../middlewares/authMiddleware')
-const {createJob,getAllJobs,getJobbyId}=require('../controllers/jobControllers')
+const express = require('express');
+const router = express.Router();
+const { protect } = require('../middlewares/authMiddleware');
+const {
+  createJob,
+  getAllJobs,
+  getJobbyId,
+  addBookmark,
+  removeBookmark,getUserBookmarks
+} = require('../controllers/jobControllers');
 
-router.get('/all',getAllJobs);
+// Public Routes
+router.get('/all', getAllJobs);
+router.get('/:id', getJobbyId);
 
-router.post('/create',protect,createJob);
+// Protected Routes
+router.post('/create', protect, createJob);
+router.post('/bookmark/:userid/:jobid',protect, addBookmark);
+router.delete('/bookmark/:userId/:jobId', protect, removeBookmark);
+router.get('/users/:userId/bookmarks', protect, getUserBookmarks);
 
-router.get('/:id',getJobbyId);
 
-router.post("/users/:userid/jobs/:jobid")
-
-
-module.exports=router;
+module.exports = router;
