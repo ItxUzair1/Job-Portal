@@ -8,6 +8,7 @@ import JobListingPage from "./pages/JobListing";
 import JobDetailsPage from "./pages/JobDetailPage";
 import Layout from "./layout/Layout";
 import BookmarkedJobsPage from "./pages/BookmarkedJobs";
+import CreateJobForm from "./pages/CreateJoobs";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="allJobs" element={<JobListingPage />} />
             <Route path="job/:id" element={<JobDetailsPage />} />
             <Route path="bookmarkedJobs" element={<BookmarkedJobsPage/>}/>
+            <Route path="postJobs" element={<CreateJobForm/>}/>            
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
