@@ -10,7 +10,7 @@ import {
   FaBookmark,
   FaRegBookmark,
 } from 'react-icons/fa';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/AuthContext';
 
 const JobDetailsPage = () => {
   const { id } = useParams();
@@ -20,7 +20,6 @@ const JobDetailsPage = () => {
   const [error, setError] = useState(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // 🔧 Load bookmark status from localStorage
   useEffect(() => {
     const bookmarkStatus = localStorage.getItem(`bookmark-${id}`);
     setIsBookmarked(bookmarkStatus === 'true');
