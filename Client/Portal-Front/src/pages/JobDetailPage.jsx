@@ -19,12 +19,23 @@ const JobDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isApplied, setIsApplied] = useState(false);
 
+  // Load bookmark status from localStorage
   useEffect(() => {
     const bookmarkStatus = localStorage.getItem(`bookmark-${id}`);
     setIsBookmarked(bookmarkStatus === 'true');
   }, [id]);
 
+  // Load apply status from localStorage
+  useEffect(() => {
+    const appliedStatus = localStorage.getItem(`applied-${id}`);
+    if (appliedStatus === 'true') {
+      setIsApplied(true);
+    }
+  }, [id]);
+
+  // Fetch job details from backend
   useEffect(() => {
     const fetchJob = async () => {
       try {
@@ -40,6 +51,18 @@ const JobDetailsPage = () => {
     fetchJob();
   }, [id]);
 
+  // Sync isApplied with backend (in case localStorage is cleared or new login)
+  useEffect(() => {
+    if (auth?.user && job?.appliedCandidates) {
+      const hasApplied = job.appliedCandidates.includes(auth.user.id);
+      setIsApplied(hasApplied);
+      if (hasApplied) {
+        localStorage.setItem(`applied-${job._id}`, 'true');
+      }
+    }
+  }, [auth, job]);
+
+  // Bookmark toggle
   const handleBookmarkClick = async () => {
     if (!auth?.token) {
       alert('Please log in to bookmark this job.');
@@ -50,20 +73,16 @@ const JobDetailsPage = () => {
       if (isBookmarked) {
         await axios.delete(
           `http://localhost:3000/api/jobs/bookmark/${auth.user.id}/${id}`,
-          {
-            headers: { Authorization: `Bearer ${auth.token}` },
-          }
+          { headers: { Authorization: `Bearer ${auth.token}` } }
         );
-        localStorage.setItem(`bookmark-${id}`, 'false'); // 🔧 Store as false
+        localStorage.setItem(`bookmark-${id}`, 'false');
       } else {
         await axios.post(
           `http://localhost:3000/api/jobs/bookmark/${auth.user.id}/${id}`,
           {},
-          {
-            headers: { Authorization: `Bearer ${auth.token}` },
-          }
+          { headers: { Authorization: `Bearer ${auth.token}` } }
         );
-        localStorage.setItem(`bookmark-${id}`, 'true'); // 🔧 Store as true
+        localStorage.setItem(`bookmark-${id}`, 'true');
       }
 
       setIsBookmarked((prev) => !prev);
@@ -73,6 +92,32 @@ const JobDetailsPage = () => {
     }
   };
 
+  // Apply handler
+  const handleApply = async () => {
+    if (!auth?.token) {
+      alert('Please log in to apply for this job.');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `http://localhost:3000/api/jobs/apply/${job._id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        }
+      );
+
+      alert('Applied successfully!');
+      setIsApplied(true);
+      localStorage.setItem(`applied-${job._id}`, 'true');
+    } catch (error) {
+      console.error('Error applying:', error);
+      alert('Failed to apply for the job.');
+    }
+  };
+
+  // Loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -81,6 +126,7 @@ const JobDetailsPage = () => {
     );
   }
 
+  // Error state
   if (error || !job) {
     return <p className="text-center text-red-500 text-xl">{error}</p>;
   }
@@ -139,12 +185,19 @@ const JobDetailsPage = () => {
         <p className="text-sm text-gray-400">
           Posted on {new Date(job.createdAt).toLocaleDateString()}
         </p>
-        <a
-          href={`/apply/${job._id}`}
-          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition duration-200"
-        >
-          Apply Now
-        </a>
+
+        {isApplied ? (
+          <span className="px-4 py-2 bg-gray-300 text-gray-700 rounded cursor-not-allowed">
+            Already Applied
+          </span>
+        ) : (
+          <button
+            onClick={handleApply}
+            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition duration-200"
+          >
+            Apply Now
+          </button>
+        )}
       </div>
     </section>
   );

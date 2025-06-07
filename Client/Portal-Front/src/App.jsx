@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import { AuthProvider } from "./context/authContext";
+import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import JobListingPage from "./pages/JobListing";
@@ -10,6 +10,7 @@ import Layout from "./layout/Layout";
 import BookmarkedJobsPage from "./pages/BookmarkedJobs";
 import CreateJobForm from "./pages/CreateJoobs";
 import RecruiterDashboard from "./pages/RecuriterDashboard";
+import RecruiterApplicants from "./pages/RecuriterApplicants";
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
             <Route path="job/:id" element={<JobDetailsPage />} />
             <Route path="bookmarkedJobs" element={<BookmarkedJobsPage/>}/>
             <Route path="postJobs" element={<CreateJobForm/>}/>
-            <Route path="/dashboard" element={<RecruiterDashboard/>}/>            
+            <Route path="/dashboard" element={<RecruiterDashboard/>}/>
+            <Route path="candidates" element={<RecruiterApplicants/>}/>           
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

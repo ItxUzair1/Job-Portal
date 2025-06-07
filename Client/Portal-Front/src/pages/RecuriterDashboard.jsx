@@ -8,7 +8,6 @@ const RecruiterDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [deletingJobId, setDeletingJobId] = useState(null); // Track which job is being deleted
 
-  // Fetch jobs posted by recruiter
   const fetchRecruiterJobs = async () => {
     try {
       setLoading(true);

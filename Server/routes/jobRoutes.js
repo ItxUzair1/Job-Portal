@@ -6,7 +6,8 @@ const {
   getAllJobs,
   getJobbyId,
   addBookmark,
-  removeBookmark,getUserBookmarks
+  removeBookmark,getUserBookmarks,
+  getJobsByUser,deleteJob,applyToJob,getApplicantsForRecruiterJobs
 } = require('../controllers/jobControllers');
 const User=require("../model/usermodel")
 const Job=require("../model/jobModel")
@@ -20,6 +21,11 @@ router.post('/create', protect, createJob);
 router.post('/bookmark/:userid/:jobid',protect, addBookmark);
 router.delete('/bookmark/:userId/:jobId', protect, removeBookmark);
 router.get('/users/:userId/bookmarks', protect, getUserBookmarks);
+router.get('/posted/:userId', protect, getJobsByUser);
+router.delete('/:id', protect, deleteJob);
+router.post("/apply/:jobId", protect, applyToJob);
+router.get('/recruiter/:userId/applicants', protect, getApplicantsForRecruiterJobs);
+
 // Example route
 router.get('/bookmarked/:userId',protect, async (req, res) => {
   try {

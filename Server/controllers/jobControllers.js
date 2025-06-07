@@ -68,6 +68,28 @@ const addBookmark = async (req, res) => {
   }
 };
 
+const deleteJob = asyncHandler(async (req, res) => {
+  const jobId = req.params.id;
+
+  const job = await Job.findById(jobId);
+
+  if (!job) {
+    res.status(404);
+    throw new Error("Job not found");
+  }
+
+  // Check if the logged-in user is the one who posted the job
+  if (job.postedBy.toString() !== req.user._id.toString()) {
+    res.status(403);
+    throw new Error("Not authorized to delete this job");
+  }
+
+  await job.deleteOne();
+
+  res.status(200).json({ message: "Job deleted successfully" });
+});
+
+
 // Remove a bookmark
 const removeBookmark = async (req, res) => {
   const { userId, jobId } = req.params;
@@ -107,6 +129,59 @@ const getUserBookmarks = async (req, res) => {
       res.status(500).json({ message: 'Server error while fetching bookmarks.' });
     }
   };
+
+  const getJobsByUser = asyncHandler(async (req, res) => {
+  const userId = req.params.userId;
+
+  if (req.user._id.toString() !== userId && req.user.role !== "admin") {
+    return res.status(403).json({ message: "Not authorized to view these jobs." });
+  }
+
+  const jobs = await Job.find({ postedBy: userId }).sort({ createdAt: -1 });
+
+  res.status(200).json(jobs);
+});
+
+const applyToJob = asyncHandler(async (req, res) => {
+  const jobId = req.params.jobId;
+  const userId = req.user._id;
+
+  const job = await Job.findById(jobId);
+  if (!job) {
+    res.status(404);
+    throw new Error("Job not found");
+  }
+
+  // Prevent duplicate applications
+  if (job.applicants.includes(userId)) {
+    res.status(400);
+    throw new Error("You have already applied for this job.");
+  }
+
+  // Add user to applicants
+  job.applicants.push(userId);
+  await job.save();
+
+  res.status(200).json({ message: "Applied to job successfully." });
+})
+
+const getApplicantsForRecruiterJobs = asyncHandler(async (req, res) => {
+  const recruiterId = req.user._id;
+
+  // Fetch jobs posted by this recruiter
+  const jobs = await Job.find({ postedBy: recruiterId }).populate('applicants', 'name email'); // populate applicants with name and email only
+
+  // Structure: [{ jobId, title, applicants: [user1, user2...] }, ...]
+  const jobApplicants = jobs.map((job) => ({
+    jobId: job._id,
+    title: job.title,
+    applicants: job.applicants, // contains populated user objects
+  }));
+
+  res.status(200).json(jobApplicants);
+});
+
+
   
 
 module.exports = {
@@ -115,5 +190,9 @@ module.exports = {
   getJobbyId,
   addBookmark,
   removeBookmark,
-  getUserBookmarks
+  getUserBookmarks,
+  getJobsByUser,
+  deleteJob,
+  applyToJob,
+  getApplicantsForRecruiterJobs
 };
