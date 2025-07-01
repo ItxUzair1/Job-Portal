@@ -135,12 +135,12 @@ This application can be deployed on:
 * **Database:** MongoDB Atlas
 
 ---
+## 📽️ Project Demo
 
-## 📸 Screenshots
+Watch the full demo video of the Role-Based Job Portal:
 
-> Add images of your login page, dashboards, job listings, and application flow here.
+👉 [Click here to watch on Loom](https://www.loom.com/share/a6b8b69b6be24df981da84e50d77ac77?sid=c3fde5a9-33d9-4ca9-b0fe-5d21396d245a)
 
----
 
 ## 🤝 Contributing
 
