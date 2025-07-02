@@ -32,12 +32,7 @@ const Navbar = () => {
               <Link to="/login" className="text-white hover:text-yellow-300 text-lg transition">
                 Sign In
               </Link>
-              <Link
-                to="/recruiter"
-                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md text-lg transition"
-              >
-                Recruiter
-              </Link>
+              
             </>
           ) : (
             <>
@@ -95,12 +90,7 @@ const Navbar = () => {
               <Link to="/login" className="block text-white hover:text-yellow-300 text-lg transition">
                 Sign In
               </Link>
-              <Link
-                to="/recruiter"
-                className="block bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md text-lg transition"
-              >
-                Recruiter
-              </Link>
+             
             </>
           ) : (
             <>
